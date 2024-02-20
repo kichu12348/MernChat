@@ -22,19 +22,27 @@ function App() {
 
   const checkAuth = async ()=>{
     const token = localStorage.getItem('uid');
-    const res = await axios.post('/user/auth',{token});
-    if(res.data.response){
-      setIsAuth(true);
-      setData({
-        name:res.data.name,
-        email:res.data.email,
-        profilePic:res.data.profilePic
-      })
-    }
-    else{
+    if(!token){
       setIsAuth(false);
+      return;
     }
-  }
+    try{
+      const res = await axios.post('/user/auth',{token});
+      if(res.data.response){
+        setIsAuth(true);
+        setData({
+          name:res.data.name,
+          email:res.data.email,
+          profilePic:res.data.profilePic
+        })
+      }
+      else{
+        setIsAuth(false);
+      }
+    }
+    catch(err){
+      console.log(err);
+    }}
 
   useEffect(()=>{
     checkAuth();
