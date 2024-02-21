@@ -8,7 +8,7 @@ import { useEffect, useState } from 'react'
 
 function App() {
 
-  axios.defaults.baseURL = 'http://localhost:5000';
+  axios.defaults.baseURL = 'https://mernchatserver.onrender.com';
   axios.defaults.withCredentials = true
 
   const[isLogged,setIsLogged] = useState(true);

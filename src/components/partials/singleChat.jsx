@@ -6,7 +6,7 @@ import io from "socket.io-client";
 import axios from "axios";
 
 
-const ENDPOINT = "http://localhost:5000";
+const ENDPOINT = "https://mernchatserver.onrender.com";
 
  const SingleChat = forwardRef(({
   messager,
@@ -46,7 +46,7 @@ const ENDPOINT = "http://localhost:5000";
     
 
     try{
-      await axios.post("http://localhost:5000/message/sendmessage",{token,message,roomID});
+      await axios.post("/message/sendmessage",{token,message,roomID});
       socket.emit('message',roomID);
       //getMessages(roomID);
       setMessage("");
@@ -62,7 +62,7 @@ const ENDPOINT = "http://localhost:5000";
   async function getMessages(roomID) {
     try {
         socket.emit('joinRoom',roomID);
-        const data = await axios.post("http://localhost:5000/message",{token,roomID});
+        const data = await axios.post("/message",{token,roomID});
         setMessageList(data.data);
         messageEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
