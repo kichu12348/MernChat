@@ -419,7 +419,7 @@ const SignOutBtn = styled.div`
 
   button {
     height: 2rem;
-    width: 5rem;
+    min-width: 5rem;
     border: none;
     outline: none;
     border-radius: 30px;
@@ -438,7 +438,7 @@ const SignOutBtn = styled.div`
     @media screen and (max-width: 768px) {
 
       button{
-        width: 3rem;
+        min-width: 3rem;
         font-size: 0.8rem;
       }
     }
