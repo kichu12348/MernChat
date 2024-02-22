@@ -36,20 +36,21 @@ const SingleChat = forwardRef(({ messager, newdata, closeBtn }, ref) => {
   const socket = io(ENDPOINT);
 
   //FUNCTIONS//////////////////////////////////////////////////
+
+  //sends message to server
   async function sendMessage(e, roomID) {
     e.preventDefault();
     if (message === "") return;
-
+    setMessage("");
     try {
       await axios.post("/message/sendmessage", { token, message, roomID });
       socket.emit("message", roomID);
-      //getMessages(roomID);
-      setMessage("");
     } catch (err) {
       console.log(err);
     }
   }
 
+  //gets messages from server when a room is joined/opened
   async function getMessages(roomID) {
     try {
       socket.emit("joinRoom", roomID);
@@ -78,6 +79,7 @@ const SingleChat = forwardRef(({ messager, newdata, closeBtn }, ref) => {
   }, []);
   ///////////////////////////////////////////////////////////////
 
+  //socket.io listeners
   async function newMessageListener() {
     socket.on("newMessage", (data) => {
       setMessageList(data);
