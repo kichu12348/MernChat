@@ -1,95 +1,85 @@
 import styled from "styled-components";
 import send from "../../assets/send.svg";
 import close from "../../assets/close.svg";
-import { useEffect, useState,useRef,forwardRef, useImperativeHandle} from "react";
+import {
+  useEffect,
+  useState,
+  useRef,
+  forwardRef,
+  useImperativeHandle,
+} from "react";
 import io from "socket.io-client";
 import axios from "axios";
 
-
 const ENDPOINT = "https://mernchatserver.onrender.com";
 
- const SingleChat = forwardRef(({
-  messager,
-  newdata,
-  closeBtn,
-},ref)=>{
-
+const SingleChat = forwardRef(({ messager, newdata, closeBtn }, ref) => {
   // sending ref to parent component
-  useImperativeHandle(ref,()=>{
-    return{
-      getMessages,
-    }
-  
-  })
-  ////////////////////////////////////////
-  
+  useImperativeHandle(ref, () => {
+    return {
+      getMessages: getMessages,
+    };
+  });
+
   //refs
   const messageEndRef = useRef();
-  
 
   //state variables
-  const[socketConnected,setSocketConnected] = useState(false);
-  const token= localStorage.getItem('uid');
+  const [socketConnected, setSocketConnected] = useState(false);
+  const token = localStorage.getItem("uid");
   const [message, setMessage] = useState("");
   const [messageList, setMessageList] = useState([{}]);
-  const[runOnce,setRunOnce] = useState(true);
+  const [runOnce, setRunOnce] = useState(true);
+  /////////////////////////////////////////////////////////////////////////////
 
   //socket.io
   const socket = io(ENDPOINT);
-
-
 
   //FUNCTIONS//////////////////////////////////////////////////
   async function sendMessage(e, roomID) {
     e.preventDefault();
     if (message === "") return;
-    
 
-    try{
-      await axios.post("/message/sendmessage",{token,message,roomID});
-      socket.emit('message',roomID);
+    try {
+      await axios.post("/message/sendmessage", { token, message, roomID });
+      socket.emit("message", roomID);
       //getMessages(roomID);
       setMessage("");
-    }
-    catch (err) {
+    } catch (err) {
       console.log(err);
     }
   }
 
-
-  
-
   async function getMessages(roomID) {
     try {
-        socket.emit('joinRoom',roomID);
-        const data = await axios.post("/message",{token,roomID});
-        setMessageList(data.data);
-        messageEndRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-    catch (err) {
+      socket.emit("joinRoom", roomID);
+      const data = await axios.post("/message", { token, roomID });
+      setMessageList(data.data);
+      messageEndRef.current.scrollIntoView({ behavior: "smooth" });
+    } catch (err) {
       setMessageList([]);
       console.log(err);
     }
   }
+
   ////////////////////////////////////////////////////////////
   useEffect(() => {
-    if(runOnce){
+    if (runOnce) {
       const userID = newdata.id;
-    getMessages(messager.roomID);
-    socket.emit('setup',userID);
-    
-    socket.on('connection',()=>{
-      setSocketConnected(true)
-    })
+      getMessages(messager.roomID);
+      socket.emit("setup", userID);
+
+      socket.on("connection", () => {
+        setSocketConnected(true);
+      });
 
       setRunOnce(false);
     }
-    
-  
-  },[]);
+  }, []);
+  ///////////////////////////////////////////////////////////////
 
- async function newMessageListener(){
-    socket.on('newMessage', (data) => {
+  async function newMessageListener() {
+    socket.on("newMessage", (data) => {
       setMessageList(data);
     });
   }
@@ -97,20 +87,19 @@ const ENDPOINT = "https://mernchatserver.onrender.com";
   useEffect(() => {
     newMessageListener();
     messageEndRef.current.scrollIntoView({ behavior: "smooth" });
-  }, [messageList,token,messager.roomID,newdata.id,socket,socketConnected,newMessageListener,!message]);
-
-
+  }, [
+    messageList,
+    token,
+    messager.roomID,
+    newdata.id,
+    socket,
+    socketConnected,
+    newMessageListener,
+    !message,
+  ]);
 
   //////////////////
 
-
-///////////////////////////////////////////////
-
-
-
-///////////////////////////////////////////////
-
-  
   return (
     <>
       <div className="MessageHeader">
@@ -125,7 +114,10 @@ const ENDPOINT = "https://mernchatserver.onrender.com";
           src={close}
           alt="close"
           className="close"
-          onClick={() => {closeBtn(); setRunOnce(true)}}
+          onClick={() => {
+            closeBtn();
+            setRunOnce(true);
+          }}
         />
         <h1>{messager.name}</h1>
       </div>
@@ -145,7 +137,9 @@ const ENDPOINT = "https://mernchatserver.onrender.com";
                 >
                   <p>
                     <span>
-                      <span>{item.from === newdata.id ? "You" : messager.name}</span>
+                      <span>
+                        {item.from === newdata.id ? "You" : messager.name}
+                      </span>
                       <img
                         src={`data:image/svg+xml;utf8,${encodeURIComponent(
                           item.from === newdata.id
@@ -183,7 +177,7 @@ const ENDPOINT = "https://mernchatserver.onrender.com";
       </div>
     </>
   );
-})
+});
 
 export default SingleChat;
 
@@ -213,8 +207,8 @@ const AllMessages = styled.div`
     }
 
     .refDIV {
-      height:1px;
-      width:1px;
+      height: 1px;
+      width: 1px;
     }
 
     .messageRight {
@@ -275,7 +269,7 @@ const AllMessages = styled.div`
         span {
           justify-content: flex-start;
           flex-direction: row-reverse;
-          
+
           span {
             justify-content: start;
           }
@@ -289,7 +283,7 @@ const AllMessages = styled.div`
         span {
           justify-content: flex-end;
           flex-direction: row;
-          
+
           span {
             justify-content: end;
           }

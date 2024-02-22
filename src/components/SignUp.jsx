@@ -1,131 +1,132 @@
 import styled from "styled-components";
 import chatLogo from "../assets/chatLogo.svg";
-import { useEffect, useState } from "react";
-import log_signUp from '../assets/backgroundImages/log_signUpPage.jpg';
-import axios from 'axios';
-
+import { useState } from "react";
+import log_signUp from "../assets/backgroundImages/log_signUpPage.jpg";
+import axios from "axios";
 
 export default function SignUp(props) {
+  //state variables
+  const [user, setUser] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [span, setSpan] = useState({
+    text: "Already have an account?",
+    class: "spanNormal",
+  });
 
-//api key
-const apiKey = "CglVv3piOwAuoJ";
-
-const [user, setUser] = useState('');
-const [email, setEmail] = useState('');
-const [password, setPassword] = useState('');
-const [span, setSpan] = useState({
-  text:'Already have an account?',
-  class:'spanNormal'
-})
-
-//handles the submit of the form
-async function handleSubmit(e){
-  e.preventDefault()
-  if(user.length<3){
-    setSpan({
-      text:'*Username must have at least 3 characters',
-      class:'spanError'
-    })
-    if(user.length>10){
+  //handles the submit of the form
+  async function handleSubmit(e) {
+    e.preventDefault();
+    if (user.length < 3) {
       setSpan({
-        text:'*Username must be max 10 characters',
-        class:'spanError'
-      })
+        text: "*Username must have at least 3 characters",
+        class: "spanError",
+      });
+      if (user.length > 10) {
+        setSpan({
+          text: "*Username must be max 10 characters",
+          class: "spanError",
+        });
+      }
+
+      window.setTimeout(() => {
+        setSpan({
+          text: "Already have an account?",
+          class: "spanNormal",
+        });
+      }, 3000);
+      return;
     }
-    
-    window.setTimeout(()=>{
-      setSpan({
-        text:'Already have an account?',
-        class:'spanNormal'
-      })
-    }, 3000)
-    return
-  };
 
-  if(password.length<8){
-    setSpan({
-      text:'*Password must have at least 8 characters',
-      class:'spanError'
-    })
-    window.setTimeout(()=>{
+    if (password.length < 8) {
       setSpan({
-        text:'Already have an account?',
-        class:'spanNormal'
-      })
-    }, 3000)
-    return
-  };
+        text: "*Password must have at least 8 characters",
+        class: "spanError",
+      });
+      window.setTimeout(() => {
+        setSpan({
+          text: "Already have an account?",
+          class: "spanNormal",
+        });
+      }, 3000);
+      return;
+    }
 
-  //sign up the user
-  const res = await axios.post('/user/signup', {user, email, password});
-  if(!res.data.response){
-    setSpan({
-      text:res.data.message,
-      class:'spanError'
-    })
-    window.setTimeout(()=>{
+    //sign up the user
+    const res = await axios.post("/user/signup", { user, email, password });
+    if (!res.data.response) {
       setSpan({
-        text:'Already have an account?',
-        class:'spanNormal'
-      })
-    }, 3000)
-    return
-  }
-  else{
-    setSpan({
-      text:res.data.message,
-      class:'spanNormal'
-    })
-    props.setIsAuth(true);
-    localStorage.setItem('uid', res.data.token);
-    props.setData({
-      name:res.data.name,
-      email:res.data.email,
-      profilePic:res.data.profilePic
-    })
+        text: res.data.message,
+        class: "spanError",
+      });
+      window.setTimeout(() => {
+        setSpan({
+          text: "Already have an account?",
+          class: "spanNormal",
+        });
+      }, 3000);
+      return;
+    } else {
+      setSpan({
+        text: res.data.message,
+        class: "spanNormal",
+      });
+      props.setIsAuth(true);
+      localStorage.setItem("uid", res.data.token);
+      props.setData({
+        name: res.data.name,
+        email: res.data.email,
+        profilePic: res.data.profilePic,
+      });
+    }
+
+    setEmail("");
+    setPassword("");
+    setUser("");
   }
 
-
-  
-  
-  
-  
-  setEmail('');
-  setPassword('');
-  setUser('');
-}
-
-const toLogin = () => {
-  props.setIsLogged(true);
-  props.setIsAuth(false);
-};
-
-
-
-
+  const toLogin = () => {
+    props.setIsLogged(true);
+    props.setIsAuth(false);
+  };
 
   return (
     <SignUpContainer>
       <form onSubmit={handleSubmit}>
         <h1>
-            <img src={chatLogo} alt="chat logo" />
-            Sign Up</h1>
-        <input type="text" value={user} onChange={e=>setUser(e.target.value)} placeholder="Username" required />
-        <input type="email" value={email} onChange={e=>setEmail(e.target.value)}  placeholder="Email" required />
-        <input type="text" value={password} onChange={e=>setPassword(e.target.value)} placeholder="Password" required />
+          <img src={chatLogo} alt="chat logo" />
+          Sign Up
+        </h1>
+        <input
+          type="text"
+          value={user}
+          onChange={(e) => setUser(e.target.value)}
+          placeholder="Username"
+          required
+        />
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Email"
+          required
+        />
+        <input
+          type="text"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="Password"
+          required
+        />
         <span className={span.class}>
-          <p>{span.text}</p><a onClick={toLogin}>Login</a>
+          <p>{span.text}</p>
+          <a onClick={toLogin}>Login</a>
         </span>
         <button type="submit">Sign Up</button>
       </form>
     </SignUpContainer>
   );
 }
-
-//data:image/png;base64,${avatar[0]}
-// {avatar.map((av,i)=>{
-//   return <input src={`data:image/png;base64,${av}`} alt="avatar" key={i} onClick={()=>console.log(av)} />
-//  })}
 
 //styles for the SignUp component
 
@@ -134,12 +135,12 @@ const SignUpContainer = styled.div`
   justify-content: center;
   align-items: center;
   width: 100svw;
-  height: 100svh;
+  height: 100dvh;
   background-image: url(${log_signUp});
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
-    background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
 
   form {
     min-height: 45svh;
@@ -158,17 +159,17 @@ const SignUpContainer = styled.div`
     color: #fff;
 
     h1 {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        font-size: 1.5rem;
-        font-weight: 600;
-        color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #fff;
 
-        img{
-            width: 2.5rem,;
-            height: 2.5rem;
-        }
+      img {
+        width: 2.5rem;
+        height: 2.5rem;
+      }
     }
 
     input {
@@ -229,13 +230,11 @@ const SignUpContainer = styled.div`
       font-size: 0.8rem;
       font-weight: 600;
 
-      a{
+      a {
         display: none;
       }
     }
   }
-
-
 
   @media screen and (max-width: 768px) {
     form {

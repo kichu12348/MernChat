@@ -168,7 +168,7 @@ export default function Chat(props) {
     });
     setMessageOpen(true);
     setIsClosed(false);
-    childRef.current.getMessages(item.roomID);
+    if(childRef.current)childRef.current.getMessages(item.roomID);
   }
 
   return (
@@ -238,7 +238,7 @@ const ChatContainer = styled.div`
   justify-content: center;
   align-items: center;
   width: 100svw;
-  height: 100svh;
+  height: 100dvh;
   position: relative;
   background-image: url(${chatPage});
   background-size: cover;
@@ -423,16 +423,24 @@ const SignOutBtn = styled.div`
     border: none;
     outline: none;
     border-radius: 30px;
-    background-color: #ffffff;
-    color: #000000;
+    background-color:#5e43f3;
+    color: #ffffff;
     cursor: pointer;
     font-size: 1rem;
     font-weight: 600;
     transition: all 0.3s ease-in-out;
 
     &:hover {
-      background-color: #ffffff;
-      box-shadow: 0 0 5px 1px #ffffff;
+      background-color: #a688fa;
+      box-shadow: 0 0 5px 1px rgba(166, 136, 250, 0.64);
+    }
+
+    @media screen and (max-width: 768px) {
+
+      button{
+        width: 3rem;
+        font-size: 0.8rem;
+      }
     }
   }
 
