@@ -11,7 +11,7 @@ import {
 import io from "socket.io-client";
 import axios from "axios";
 
-const ENDPOINT = "https://mernchatserver.onrender.com";
+const ENDPOINT = "https://mernchat-vercel-gy4lgkqus-kichu12348s-projects.vercel.app";
 
 const SingleChat = forwardRef(({ messager, newdata, closeBtn }, ref) => {
   // sending ref to parent component
