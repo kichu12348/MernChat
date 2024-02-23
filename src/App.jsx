@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 
 function App() {
   //axios defaults
-  axios.defaults.baseURL = "https://mernchat-vercellol-oz4en6qff-kichu12348s-projects.vercel.app";
+  axios.defaults.baseURL = "https://mernchatserver.onrender.com";
   axios.defaults.withCredentials = true;
 
   //state variables
