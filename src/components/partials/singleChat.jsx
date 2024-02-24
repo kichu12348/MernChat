@@ -11,7 +11,7 @@ import {
 import io from "socket.io-client";
 import axios from "axios";
 
-const ENDPOINT = "https://mernchatserver.onrender.com";
+const ENDPOINT = "https://mernchatserver-mup6.onrender.com";
 
 const SingleChat = forwardRef(({ messager, newdata, closeBtn }, ref) => {
   // sending ref to parent component

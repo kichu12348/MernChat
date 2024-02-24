@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 
 function App() {
   //axios defaults
-  axios.defaults.baseURL = "https://mernchatserver.onrender.com";
+  axios.defaults.baseURL = "https://mernchatserver-mup6.onrender.com";
   axios.defaults.withCredentials = true;
 
   //state variables
