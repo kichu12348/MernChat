@@ -1,5 +1,11 @@
 import styled from "styled-components";
 import search from "../../assets/search.svg";
+import threeDots from "../../assets/threeDots.svg";
+import deleteBtnSVg from "../../assets/delete.svg";
+import {useState } from "react";
+import axios from "axios";
+
+
 
 export default function ContactsComp({
   query,
@@ -10,13 +16,46 @@ export default function ContactsComp({
   openMessage,
   newdata,
   visibleQuery,
-  
+  setMessageOpen,
+  messager,
+  displayConatcts,
 }) {
 
-   
+// state variables
+  const[visibleDelete,setVisibleDelete] = useState(false);
+
+//uid
+const token = localStorage.getItem('uid');
+
+//functions///
+
+const ContactEnableOrDisable = (item) => {
+  if(!visibleDelete)openMessage(item)
+}
+
+  const deleteContact = async (item) => {
+    if(messager.name === item.name){
+      setMessageOpen();
+      await axios.post('/user/deleteContact',{id:item.id ,token})
+      displayConatcts()
+      setVisibleDelete(false);
+      return;
+    }
+    await axios.post('/user/deleteContact',{id:item.id ,token})
+    displayConatcts()
+    setVisibleDelete(false);
+  };
+
+  const displayDelete = () => {
+    if(contact.length === 0)return;
+    setVisibleDelete(!visibleDelete);
+  }
+
+
+
   return (
     <Contacts>
-      <SearchBar visiblequery={visibleQuery.toString()}>
+      <SearchBar visiblequery={visibleQuery && !visibleDelete ? "true" : "false" }>
         <input
           type="text"
           placeholder="Search"
@@ -42,11 +81,11 @@ export default function ContactsComp({
           </ul>
         </div>
       </SearchBar>
-      <ContactList>
+      <ContactList visibledelete={visibleDelete.toString()}>
         <ul>
           {contact.map((item, id) => {
             return (
-              <li key={id} onClick={() => openMessage(item)}>
+              <li key={id} onClick={() => ContactEnableOrDisable(item)}>
                 <img
                   src={`data:image/svg+xml;utf8,${encodeURIComponent(
                     item.profilePic
@@ -54,6 +93,7 @@ export default function ContactsComp({
                   alt=""
                 />
                 <p>{item.name}</p>
+                <img src={deleteBtnSVg} className="deletebtnSVg" onClick={()=>deleteContact(item)} />
               </li>
             );
           })}
@@ -67,6 +107,7 @@ export default function ContactsComp({
           alt="profile"
         />
         <p>{newdata.name}</p>
+        <img src={threeDots} className="threeDots" onClick={()=>displayDelete()}/>
       </div>
     </Contacts>
   );
@@ -92,8 +133,9 @@ const Contacts = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 1rem;
+    gap: 0.5rem;
     color: #fff;
+    position: relative;
 
     img {
       width: 2rem;
@@ -105,7 +147,16 @@ const Contacts = styled.div`
     p {
       font-size: 1.5rem;
       font-weight: 600;
-      margin: 0.5rem;
+      margin: 0.5rem 0 0.5rem 0.5rem;
+    }
+
+    .threeDots {
+      width: 1.5rem;
+      height: 1.5rem;
+      cursor: pointer;
+      box-shadow: none;
+      position: absolute;
+      right: 10px;
     }
   }
 
@@ -239,6 +290,7 @@ const ContactList = styled.div`
       justify-content: flex-start;
       gap: 1rem;
       flex-direction: row;
+      position: relative;
       &:hover {
         background-color: rgba(63, 63, 63, 0.67);
       }
@@ -254,6 +306,20 @@ const ContactList = styled.div`
         font-size: 1.5rem;
         font-weight: 600;
         color: #fff;
+      }
+
+      .deletebtnSVg {
+        width: 2rem;
+        height: 2rem;
+        cursor: pointer;
+        position: absolute;
+        right: 0;
+        transition: all 0.3s ease-in-out;
+        display: ${(props) => (props.visibledelete === "true" ? "block" : "none")};
+
+        &:hover {
+          transform: scale(1.1);
+        }
       }
     }
   }

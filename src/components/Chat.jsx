@@ -100,8 +100,8 @@ export default function Chat(props) {
 
   // function to add contact
   const addContact = async (id) => {
+    
     const res = await axios.post("/user/addContact", { id, token });
-
     if (!res.data.response) {
       setVisibleQuery(false);
       setQuery("");
@@ -142,7 +142,9 @@ export default function Chat(props) {
   }, []);
 
 
- 
+ async function settingMessageOpen() {
+    setMessageOpen(false);
+ }
 
   
 
@@ -188,6 +190,9 @@ export default function Chat(props) {
               openMessage={openMessage}
               newdata={newdata}
               visibleQuery={visibleQuery}
+              setMessageOpen={settingMessageOpen}
+              messager={messager}
+              displayConatcts={displayConatcts}
             />
           ) : (
             <Messages>
@@ -210,6 +215,10 @@ export default function Chat(props) {
               openMessage={openMessage}
               newdata={newdata}
               visibleQuery={visibleQuery}
+              setMessageOpen={settingMessageOpen}
+              messageOpen={messageOpen}
+              messager={messager}
+              displayConatcts={displayConatcts}
             />
             <Messages>
               {messageOpen ? (
