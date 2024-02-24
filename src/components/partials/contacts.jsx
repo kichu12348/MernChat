@@ -55,12 +55,13 @@ const ContactEnableOrDisable = (item) => {
 
   return (
     <Contacts>
-      <SearchBar visiblequery={visibleQuery && !visibleDelete ? "true" : "false" }>
+      <SearchBar visiblequery={visibleQuery && !visibleDelete ? "true" : "false" } onSubmit={e=>e.preventDefault()}>
         <input
           type="text"
           placeholder="Search"
           value={query}
           onChange={queryContact}
+          onSubmit={e=>e.preventDefault()}
         />
         <img src={search} className="searchIMG" />
         <div className="searchQueryList">
