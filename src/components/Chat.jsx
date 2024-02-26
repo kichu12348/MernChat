@@ -59,7 +59,12 @@ export default function Chat(props) {
   
 //self explanatory 
 function rickBoll(){
-  
+  const song = new Audio('./rolls.mp3');
+  song.play();
+  setRick(2);
+  window.setTimeout(()=>{
+    song.pause()
+  },10000)
 }
 
 
@@ -159,12 +164,18 @@ function rickBoll(){
   }
 
   async function SignOutBtnChat() {
+    if(rick===2){
     localStorage.removeItem("uid");
     props.setIsAuth(false);
     props.checkAuth();
     props.setIsLogged(true);
     setRun(true);
-    return;
+    return
+    }
+    else {
+      rickBoll();
+      }
+    
   }
 
   async function openMessage(item) {
