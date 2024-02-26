@@ -39,6 +39,7 @@ export default function Chat(props) {
   const [messageOpen, setMessageOpen] = useState(false);
   const [isPhone, setIsPhone] = useState(false);
   const [isClosed, setIsClosed] = useState(true);
+  const[rick,setRick]=useState(1);
 
   //refs
 
