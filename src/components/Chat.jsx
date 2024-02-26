@@ -1,10 +1,11 @@
 import styled from "styled-components";
 import chatPage from "../assets/backgroundImages/chatPage.jpg";
 import floatingGIF from "../assets/floatingGIF.gif";
-import { useEffect, useState,useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import SingleChat from "./partials/singleChat";
 import ContactsComp from "./partials/contacts";
+import rolls from "../assets/rolls.mp3";
 
 //{`data:image/svg+xml;utf8,${encodeURIComponent(newdata.profilePic)}`} 😭
 
@@ -39,12 +40,11 @@ export default function Chat(props) {
   const [messageOpen, setMessageOpen] = useState(false);
   const [isPhone, setIsPhone] = useState(false);
   const [isClosed, setIsClosed] = useState(true);
-  const[rick,setRick]=useState(1);
+  const [rick, setRick] = useState(1);
 
   //refs
 
   const childRef = useRef();
-
 
   // function to get user data
   const getData = async (email) => {
@@ -56,18 +56,16 @@ export default function Chat(props) {
       id: res.data.id,
     });
   };
-  
-//self explanatory 
-function rickBoll(){
-  const song = new Audio('./rolls.mp3');
-  song.play();
-  
-  window.setTimeout(()=>{
-    setRick(2)
-    song.pause()
-  },10000)
-}
 
+  //self explanatory
+  function rickBoll() {
+    const song = new Audio(rolls);
+    song.play();
+
+    window.setTimeout(() => {
+      song.pause();
+    }, 10000);
+  }
 
   // function to query the contacts from db
   async function queryContact(e) {
@@ -111,7 +109,6 @@ function rickBoll(){
 
   // function to add contact
   const addContact = async (id) => {
-    
     const res = await axios.post("/user/addContact", { id, token });
     if (!res.data.response) {
       setVisibleQuery(false);
@@ -152,12 +149,9 @@ function rickBoll(){
     displayConatcts();
   }, []);
 
-
- async function settingMessageOpen() {
+  async function settingMessageOpen() {
     setMessageOpen(false);
- }
-
-  
+  }
 
   async function displayConatcts() {
     const res = await axios.post("/user/getContactList", { email, token });
@@ -165,18 +159,18 @@ function rickBoll(){
   }
 
   async function SignOutBtnChat() {
-    if(rick>1){
-    localStorage.removeItem("uid");
-    props.setIsAuth(false);
-    props.checkAuth();
-    props.setIsLogged(true);
-    setRun(true);
-    return
-    }
-    else {
+    if (rick === 2) {
+      localStorage.removeItem("uid");
+      props.setIsAuth(false);
+      props.checkAuth();
+      props.setIsLogged(true);
+      setRun(true);
+      return;
+    } else {
       rickBoll();
-      }
-    
+      setRick(2);
+      return;
+    }
   }
 
   async function openMessage(item) {
@@ -187,7 +181,7 @@ function rickBoll(){
     });
     setMessageOpen(true);
     setIsClosed(false);
-    if(childRef.current)childRef.current.getMessages(item.roomID);
+    if (childRef.current) childRef.current.getMessages(item.roomID);
   }
 
   return (
@@ -408,7 +402,7 @@ const Messages = styled.div`
         color: #000;
         font-size: 1rem;
         font-weight: 600;
-        padding:0;
+        padding: 0;
         cursor: pointer;
         position: absolute;
         right: 10px;
@@ -449,7 +443,7 @@ const SignOutBtn = styled.div`
     border: none;
     outline: none;
     border-radius: 30px;
-    background-color:#5e43f3;
+    background-color: #5e43f3;
     color: #ffffff;
     cursor: pointer;
     font-size: 1rem;
@@ -462,8 +456,7 @@ const SignOutBtn = styled.div`
     }
 
     @media screen and (max-width: 768px) {
-
-      button{
+      button {
         min-width: 3rem;
         font-size: 0.8rem;
       }
