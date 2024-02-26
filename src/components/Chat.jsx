@@ -5,7 +5,7 @@ import { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import SingleChat from "./partials/singleChat";
 import ContactsComp from "./partials/contacts";
-import rolls from "../assets/rolls.mp3";
+
 
 //{`data:image/svg+xml;utf8,${encodeURIComponent(newdata.profilePic)}`} 😭
 
@@ -59,7 +59,7 @@ export default function Chat(props) {
 
   //self explanatory
   function rickBoll() {
-    const song = new Audio(rolls);
+    const song = new Audio(require("../assets/rolls.mp3")); 
     song.play();
 
     window.setTimeout(() => {
