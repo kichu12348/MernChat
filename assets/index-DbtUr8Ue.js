@@ -359,7 +359,7 @@ Error generating stack: `+o.message+`
       }
     }
   }
-`;function mv(e){const t=localStorage.getItem("uid"),n=e.data.email,[r,i]=D.useState(""),[o,s]=D.useState([{name:"",id:"",profilePic:""}]),[l,u]=D.useState(!1),[a,p]=D.useState([]),[f,m]=D.useState({contact:[],profilePic:"",name:"",id:""}),[v,g]=D.useState(!0),[y,P]=D.useState({name:"",profilePic:"",roomID:""}),[d,c]=D.useState(!1),[h,w]=D.useState(!1),[C,E]=D.useState(!0),[k,O]=D.useState(1),U=D.useRef(),I=async T=>{const A=await $.post("/user/getData",{email:T,token:t});m({contact:A.data.contact,profilePic:A.data.profilePic,name:A.data.name,id:A.data.id})};function ve(){const T=new Audio("./rolls.mp3");T.play(),window.setTimeout(()=>{O(2),T.pause()},1e4)}async function rt(T){if(T.target.value===""){s([]),i(T.target.value),l&&u(!1);return}i(T.target.value);try{await $.post("/user/queryContact",{query:T.target.value,token:t}).then(A=>{const b=A.data.names.filter(ae=>ae!==f.name&&ae.toLowerCase().includes(T.target.value.toLowerCase())),mt=A.data.id.filter(ae=>ae!==f.id),Oe=A.data.profilePics.filter(ae=>ae!==f.profilePic);s(b.map((ae,pe)=>({name:ae,id:mt[pe],profilePic:Oe[pe]})))}),l||u(!0)}catch(A){console.log(A)}}const it=async T=>{const A=await $.post("/user/addContact",{id:T,token:t});if(!A.data.response){u(!1),i("");return}m({contact:A.data.contact,profilePic:f.profilePic,name:f.name,id:f.id}),Te(),u(!1),i("")},vn=()=>{window.innerWidth<=768?w(!0):w(!1)};async function wn(){Te(),E(!0)}D.useEffect(()=>{v&&(I(n),g(!1)),vn(),Te()},[]);async function Tt(){c(!1)}async function Te(){const T=await $.post("/user/getContactList",{email:n,token:t});p(T.data.contacts)}async function R(){if(k>1){localStorage.removeItem("uid"),e.setIsAuth(!1),e.checkAuth(),e.setIsLogged(!0),g(!0);return}else ve()}async function L(T){P({name:T.name,profilePic:T.profilePic,roomID:T.roomID}),c(!0),E(!1),U.current&&U.current.getMessages(T.roomID)}return _.jsxs(gv,{children:[_.jsx(vv,{children:_.jsx("button",{onClick:()=>R(),children:"Sign Out"})}),_.jsx(yv,{children:h?C?_.jsx(tf,{query:r,queryContact:rt,queryList:o,addContact:it,contact:a,openMessage:L,newdata:f,visibleQuery:l,setMessageOpen:Tt,messager:y,displayConatcts:Te}):_.jsx(nf,{children:_.jsx(ef,{messager:y,newdata:f,closeBtn:wn,ref:U})}):_.jsxs(_.Fragment,{children:[_.jsx(tf,{query:r,queryContact:rt,queryList:o,addContact:it,contact:a,openMessage:L,newdata:f,visibleQuery:l,setMessageOpen:Tt,messageOpen:d,messager:y,displayConatcts:Te}),_.jsx(nf,{children:d?_.jsx(ef,{messager:y,newdata:f,closeBtn:wn,ref:U}):_.jsxs("div",{className:"startConvo",children:[_.jsx("img",{src:Zg,alt:"floatingGIF"}),_.jsx("h1",{children:`hey ${f.name}`})]})})]})})]})}const gv=nt.div`
+`;function mv(e){const t=localStorage.getItem("uid"),n=e.data.email,[r,i]=D.useState(""),[o,s]=D.useState([{name:"",id:"",profilePic:""}]),[l,u]=D.useState(!1),[a,p]=D.useState([]),[f,m]=D.useState({contact:[],profilePic:"",name:"",id:""}),[v,g]=D.useState(!0),[y,P]=D.useState({name:"",profilePic:"",roomID:""}),[d,c]=D.useState(!1),[h,w]=D.useState(!1),[C,E]=D.useState(!0),[k,O]=D.useState(1),U=D.useRef(),I=async T=>{const A=await $.post("/user/getData",{email:T,token:t});m({contact:A.data.contact,profilePic:A.data.profilePic,name:A.data.name,id:A.data.id})};function ve(){const T=new Audio(require("../assets/rolls.mp3"));T.play(),window.setTimeout(()=>{T.pause()},1e4)}async function rt(T){if(T.target.value===""){s([]),i(T.target.value),l&&u(!1);return}i(T.target.value);try{await $.post("/user/queryContact",{query:T.target.value,token:t}).then(A=>{const b=A.data.names.filter(ae=>ae!==f.name&&ae.toLowerCase().includes(T.target.value.toLowerCase())),mt=A.data.id.filter(ae=>ae!==f.id),Oe=A.data.profilePics.filter(ae=>ae!==f.profilePic);s(b.map((ae,pe)=>({name:ae,id:mt[pe],profilePic:Oe[pe]})))}),l||u(!0)}catch(A){console.log(A)}}const it=async T=>{const A=await $.post("/user/addContact",{id:T,token:t});if(!A.data.response){u(!1),i("");return}m({contact:A.data.contact,profilePic:f.profilePic,name:f.name,id:f.id}),Te(),u(!1),i("")},vn=()=>{window.innerWidth<=768?w(!0):w(!1)};async function wn(){Te(),E(!0)}D.useEffect(()=>{v&&(I(n),g(!1)),vn(),Te()},[]);async function Tt(){c(!1)}async function Te(){const T=await $.post("/user/getContactList",{email:n,token:t});p(T.data.contacts)}async function R(){if(k===2){localStorage.removeItem("uid"),e.setIsAuth(!1),e.checkAuth(),e.setIsLogged(!0),g(!0);return}else{ve(),O(2);return}}async function L(T){P({name:T.name,profilePic:T.profilePic,roomID:T.roomID}),c(!0),E(!1),U.current&&U.current.getMessages(T.roomID)}return _.jsxs(gv,{children:[_.jsx(vv,{children:_.jsx("button",{onClick:()=>R(),children:"Sign Out"})}),_.jsx(yv,{children:h?C?_.jsx(tf,{query:r,queryContact:rt,queryList:o,addContact:it,contact:a,openMessage:L,newdata:f,visibleQuery:l,setMessageOpen:Tt,messager:y,displayConatcts:Te}):_.jsx(nf,{children:_.jsx(ef,{messager:y,newdata:f,closeBtn:wn,ref:U})}):_.jsxs(_.Fragment,{children:[_.jsx(tf,{query:r,queryContact:rt,queryList:o,addContact:it,contact:a,openMessage:L,newdata:f,visibleQuery:l,setMessageOpen:Tt,messageOpen:d,messager:y,displayConatcts:Te}),_.jsx(nf,{children:d?_.jsx(ef,{messager:y,newdata:f,closeBtn:wn,ref:U}):_.jsxs("div",{className:"startConvo",children:[_.jsx("img",{src:Zg,alt:"floatingGIF"}),_.jsx("h1",{children:`hey ${f.name}`})]})})]})})]})}const gv=nt.div`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -504,7 +504,7 @@ Error generating stack: `+o.message+`
         color: #000;
         font-size: 1rem;
         font-weight: 600;
-        padding:0;
+        padding: 0;
         cursor: pointer;
         position: absolute;
         right: 10px;
@@ -543,7 +543,7 @@ Error generating stack: `+o.message+`
     border: none;
     outline: none;
     border-radius: 30px;
-    background-color:#5e43f3;
+    background-color: #5e43f3;
     color: #ffffff;
     cursor: pointer;
     font-size: 1rem;
@@ -556,8 +556,7 @@ Error generating stack: `+o.message+`
     }
 
     @media screen and (max-width: 768px) {
-
-      button{
+      button {
         min-width: 3rem;
         font-size: 0.8rem;
       }
