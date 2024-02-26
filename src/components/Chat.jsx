@@ -61,8 +61,9 @@ export default function Chat(props) {
 function rickBoll(){
   const song = new Audio('./rolls.mp3');
   song.play();
-  setRick(2);
+  
   window.setTimeout(()=>{
+    setRick(2)
     song.pause()
   },10000)
 }
@@ -164,7 +165,7 @@ function rickBoll(){
   }
 
   async function SignOutBtnChat() {
-    if(rick===2){
+    if(rick>1){
     localStorage.removeItem("uid");
     props.setIsAuth(false);
     props.checkAuth();
