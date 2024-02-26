@@ -55,7 +55,11 @@ export default function Chat(props) {
       id: res.data.id,
     });
   };
-
+  
+//self explanatory 
+function rickBoll(){
+  
+}
 
 
   // function to query the contacts from db
