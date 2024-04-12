@@ -47,7 +47,7 @@ const SingleChat = forwardRef(({ messager, newdata, closeBtn }, ref) => {
       socket.emit("message", {
         message,
         roomID,
-        from:newData.id
+        from:newdata.id
       });
     } catch (err) {
       console.log(err);
