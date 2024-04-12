@@ -44,7 +44,11 @@ const SingleChat = forwardRef(({ messager, newdata, closeBtn }, ref) => {
     setMessage("");
     try {
       await axios.post("/message/sendmessage", { token, message, roomID });
-      socket.emit("message", roomID);
+      socket.emit("message", {
+        message,
+        roomID,
+        from:newData.id
+      });
     } catch (err) {
       console.log(err);
     }
@@ -82,7 +86,7 @@ const SingleChat = forwardRef(({ messager, newdata, closeBtn }, ref) => {
   //socket.io listeners
   async function newMessageListener() {
     socket.on("newMessage", (data) => {
-      setMessageList(data);
+      setMessageList(prev=>[...prev,data]);
     });
   }
 
