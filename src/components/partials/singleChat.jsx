@@ -47,9 +47,15 @@ const SingleChat = forwardRef(({ messager, newdata, closeBtn }, ref) => {
     try {
       await axios.post("/message/sendmessage", { token, message, roomID });
       socket.emit("message", {
+<<<<<<< HEAD
         message: message,
         roomID: roomID,
         from: newdata.id,
+=======
+        message,
+        roomID,
+        from:newdata.id
+>>>>>>> 5209648dbc6bd03f77f681723d089d5d076fe360
       });
     } catch (err) {
       console.log(err);
@@ -88,8 +94,19 @@ const SingleChat = forwardRef(({ messager, newdata, closeBtn }, ref) => {
  
 
   //socket.io listeners
+<<<<<<< HEAD
   const handleNewMessage = useCallback((newData) => {
     setMessageList((prev) => [...prev, newData]);
+=======
+  async function newMessageListener() {
+    socket.on("newMessage", (data) => {
+      setMessageList(prev=>[...prev,data]);
+    });
+  }
+
+  useEffect(() => {
+    newMessageListener();
+>>>>>>> 5209648dbc6bd03f77f681723d089d5d076fe360
     messageEndRef.current.scrollIntoView({ behavior: "smooth" });
   }, [socket]);
   
