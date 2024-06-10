@@ -1,11 +1,12 @@
 import styled from "styled-components";
 import chatPage from "../assets/backgroundImages/chatPage.jpg";
 import floatingGIF from "../assets/floatingGIF.gif";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import axios from "axios";
 import SingleChat from "./partials/singleChat";
 import ContactsComp from "./partials/contacts";
-import rolls from "../assets/audio/rolls.mp3";
+import {useSocket} from '../context/socketContext'
+
 
 
 //{`data:image/svg+xml;utf8,${encodeURIComponent(newdata.profilePic)}`} 😭
@@ -14,6 +15,10 @@ export default function Chat(props) {
   // getting token from local storage
   const token = localStorage.getItem("uid");
   const email = props.data.email;
+
+  //socket.io
+  const socket = useSocket();
+
 
   // state variables
   const [query, setQuery] = useState("");
@@ -41,7 +46,7 @@ export default function Chat(props) {
   const [messageOpen, setMessageOpen] = useState(false);
   const [isPhone, setIsPhone] = useState(false);
   const [isClosed, setIsClosed] = useState(true);
-  const [rick, setRick] = useState(1);
+ 
 
   //refs
 
@@ -60,13 +65,15 @@ export default function Chat(props) {
 
   //self explanatory
   function rickBoll() {
-    const song = new Audio(rolls); 
-    song.play();
-
-    window.setTimeout(() => {
-      song.pause();
-    }, 10000);
+    return null
   }
+
+  //join socket to userID
+  useEffect(() => {
+    if (newdata.id!=="") {
+      socket.emit("setup", {userId:newdata.id});
+    }
+  }, [newdata.id])
 
   // function to query the contacts from db
   async function queryContact(e) {
@@ -108,6 +115,8 @@ export default function Chat(props) {
     }
   }
 
+  // console.log(contact)
+
   // function to add contact
   const addContact = async (id) => {
     const res = await axios.post("/user/addContact", { id, token });
@@ -125,6 +134,13 @@ export default function Chat(props) {
     displayConatcts();
     setVisibleQuery(false);
     setQuery("");
+    
+    socket.emit("contactAdded", {id,userData:{
+      name:newdata.name,
+      profilePic:newdata.profilePic,
+      id:newdata.id,
+      roomID:res.data.newContacts.roomid
+    }});
   };
 
   const CheckIfPhoneOrNot = () => {
@@ -150,6 +166,32 @@ export default function Chat(props) {
     displayConatcts();
   }, []);
 
+
+  const newContact = useCallback((userData)=>{
+    setContact(prev=>{
+      if(prev.find(contact=>contact.id === userData.id))return prev;
+      return [...prev,userData]
+    })
+  },[socket,contact])
+
+
+  useEffect(()=>{
+    socket.on('newContact',newContact)
+  },[newContact,socket])
+
+  const handleRemoveContact = useCallback(({userId,name})=>{
+    setContact(prev=>prev.filter(contact=>contact.id !== userId))
+    if(messager.name === name){
+      setIsClosed(true)
+    }
+  },[socket])
+
+
+  useEffect(()=>{
+    socket.on('deleteContact',handleRemoveContact)
+
+  },[socket,handleRemoveContact])
+
   async function settingMessageOpen() {
     setMessageOpen(false);
   }
@@ -160,18 +202,14 @@ export default function Chat(props) {
   }
 
   async function SignOutBtnChat() {
-    if (rick === 2) {
+  
       localStorage.removeItem("uid");
       props.setIsAuth(false);
       props.checkAuth();
       props.setIsLogged(true);
       setRun(true);
       return;
-    } else {
-      rickBoll();
-      setRick(2);
-      return;
-    }
+    
   }
 
   async function openMessage(item) {

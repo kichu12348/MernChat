@@ -7,11 +7,13 @@ import {
   useRef,
   forwardRef,
   useImperativeHandle,
+  useCallback
 } from "react";
-import io from "socket.io-client";
 import axios from "axios";
+import { useSocket } from "../../context/socketContext";
 
-const ENDPOINT = "https://mernchatserver-mup6.onrender.com";
+
+ //https://mernchatserver-mup6.onrender.com
 
 const SingleChat = forwardRef(({ messager, newdata, closeBtn }, ref) => {
   // sending ref to parent component
@@ -33,7 +35,7 @@ const SingleChat = forwardRef(({ messager, newdata, closeBtn }, ref) => {
   /////////////////////////////////////////////////////////////////////////////
 
   //socket.io
-  const socket = io(ENDPOINT);
+  const socket =useSocket();
 
   //FUNCTIONS//////////////////////////////////////////////////
 
@@ -44,14 +46,18 @@ const SingleChat = forwardRef(({ messager, newdata, closeBtn }, ref) => {
     setMessage("");
     try {
       await axios.post("/message/sendmessage", { token, message, roomID });
-      socket.emit("message", roomID);
+      socket.emit("message", {
+        message: message,
+        roomID: roomID,
+        from: newdata.id,
+      });
     } catch (err) {
       console.log(err);
     }
   }
-
   //gets messages from server when a room is joined/opened
-  async function getMessages(roomID) {
+
+  const getMessages = useCallback(async (roomID) => {
     try {
       socket.emit("joinRoom", roomID);
       const data = await axios.post("/message", { token, roomID });
@@ -61,7 +67,7 @@ const SingleChat = forwardRef(({ messager, newdata, closeBtn }, ref) => {
       setMessageList([]);
       console.log(err);
     }
-  }
+  },[socket]);
 
   ////////////////////////////////////////////////////////////
   useEffect(() => {
@@ -76,30 +82,25 @@ const SingleChat = forwardRef(({ messager, newdata, closeBtn }, ref) => {
 
       setRunOnce(false);
     }
-  }, []);
+  }, [getMessages, messager.roomID, newdata.id, runOnce, socket]);
   ///////////////////////////////////////////////////////////////
 
+ 
+
   //socket.io listeners
-  async function newMessageListener() {
-    socket.on("newMessage", (data) => {
-      setMessageList(data);
-    });
-  }
-
-  useEffect(() => {
-    newMessageListener();
+  const handleNewMessage = useCallback((newData) => {
+    setMessageList((prev) => [...prev, newData]);
     messageEndRef.current.scrollIntoView({ behavior: "smooth" });
-  }, [
-    messageList,
-    token,
-    messager.roomID,
-    newdata.id,
-    socket,
-    socketConnected,
-    newMessageListener,
-    !message,
-  ]);
-
+  }, [socket]);
+  
+  useEffect(() => {
+    socket.on('newMessage', handleNewMessage);
+  
+    return () => {
+      socket.off('newMessage', handleNewMessage);
+    };
+  }, [socket, handleNewMessage]);
+  
   //////////////////
 
   return (
@@ -130,9 +131,7 @@ const SingleChat = forwardRef(({ messager, newdata, closeBtn }, ref) => {
             return (
               <div
                 key={index}
-                className={
-                  item.from === newdata.id ? "messageRight" : "messageLeft"
-                }
+                className={item.from === newdata.id ? "messageRight" : "messageLeft"}
               >
                 <div
                   className={item.from === newdata.id ? "rightMSG" : "leftMSG"}
@@ -157,11 +156,11 @@ const SingleChat = forwardRef(({ messager, newdata, closeBtn }, ref) => {
               </div>
             );
           })}
-          <div className="refDIV" ref={messageEndRef}></div>
+          <div className="refDIV" ref={messageEndRef} ></div>
         </div>
       </AllMessages>
 
-      <div className="MessageFooter">
+      <div className="MessageFooter" >
         <form
           className="inputMessages"
           onSubmit={(e) => sendMessage(e, messager.roomID)}
@@ -193,6 +192,13 @@ const AllMessages = styled.div`
     overflow-y: scroll;
     padding: 0;
     margin: 0;
+
+    .refDIV{
+      height: 1px;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+    }
 
     &::-webkit-scrollbar {
       width: 0.5em;

@@ -4,11 +4,15 @@ import Login from "./components/Login";
 import SignUp from "./components/SignUp";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import SocketProvider from "./context/socketContext";
 
 function App() {
   //axios defaults
-  axios.defaults.baseURL = "https://mernchatserver-mup6.onrender.com";
+  axios.defaults.baseURL = "https://mernchatserver-mup6.onrender.com";  //https://mernchatserver-mup6.onrender.com
   axios.defaults.withCredentials = true;
+
+  ///////////////////////////////////////////
+  
 
   //state variables
   const [isLogged, setIsLogged] = useState(true);
@@ -57,6 +61,7 @@ function App() {
   }, []);
 
   return (
+    <SocketProvider>
     <>
       {isAuth ? (
         <Chat
@@ -79,6 +84,7 @@ function App() {
         />
       )}
     </>
+    </SocketProvider>
   );
 }
 

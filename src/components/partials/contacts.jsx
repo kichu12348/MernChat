@@ -4,6 +4,7 @@ import threeDots from "../../assets/threeDots.svg";
 import deleteBtnSVg from "../../assets/delete.svg";
 import {useState } from "react";
 import axios from "axios";
+import { useSocket } from "../../context/socketContext";
 
 
 
@@ -27,6 +28,9 @@ export default function ContactsComp({
 //uid
 const token = localStorage.getItem('uid');
 
+//socket
+const socket = useSocket();
+
 //functions///
 
 const ContactEnableOrDisable = (item) => {
@@ -34,16 +38,10 @@ const ContactEnableOrDisable = (item) => {
 }
 
   const deleteContact = async (item) => {
-    if(messager.name === item.name){
-      setMessageOpen();
-      await axios.post('/user/deleteContact',{id:item.id ,token})
-      displayConatcts()
-      setVisibleDelete(false);
-      return;
-    }
     await axios.post('/user/deleteContact',{id:item.id ,token})
     displayConatcts()
     setVisibleDelete(false);
+    socket.emit('contactDeleted',{id:item.id,userId:newdata.id,name:newdata.name});
   };
 
   const displayDelete = () => {
